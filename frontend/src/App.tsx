@@ -10,12 +10,17 @@ import { Menu } from "lucide-react";
 
 function App() {
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
+  const [desktopSidebarCollapsed, setDesktopSidebarCollapsed] = useState(false);
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900">
       <div className="mx-auto flex min-h-screen flex-col lg:flex-row">
         <Sidebar
           mobileOpen={mobileNavOpen}
+          desktopCollapsed={desktopSidebarCollapsed}
+          onToggleDesktopCollapsed={() =>
+            setDesktopSidebarCollapsed((current) => !current)
+          }
           onMobileClose={() => setMobileNavOpen(false)}
         />
         <main className="flex-1 bg-white p-4 sm:p-6 lg:p-8">

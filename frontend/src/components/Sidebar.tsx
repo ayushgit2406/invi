@@ -6,6 +6,8 @@ import {
   Users,
   ShoppingCart,
   X,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 
 const navItems = [
@@ -17,10 +19,17 @@ const navItems = [
 
 type SidebarProps = {
   mobileOpen: boolean;
+  desktopCollapsed: boolean;
+  onToggleDesktopCollapsed: () => void;
   onMobileClose: () => void;
 };
 
-export function Sidebar({ mobileOpen, onMobileClose }: SidebarProps) {
+export function Sidebar({
+  mobileOpen,
+  desktopCollapsed,
+  onToggleDesktopCollapsed,
+  onMobileClose,
+}: SidebarProps) {
   useEffect(() => {
     if (!mobileOpen) {
       return;
@@ -66,21 +75,51 @@ export function Sidebar({ mobileOpen, onMobileClose }: SidebarProps) {
 
   return (
     <>
-      <aside className="sticky top-0 hidden h-screen w-72 flex-col border-r border-slate-200 bg-slate-50/95 backdrop-blur-sm lg:flex">
-        <div className="flex items-start justify-between gap-3 px-3 pt-6">
-          <div className="flex items-center gap-3">
+      <aside
+        className={`sticky top-0 hidden h-screen flex-col border-r border-slate-200 bg-slate-50/95 backdrop-blur-sm transition-[width] duration-300 lg:flex ${
+          desktopCollapsed ? "w-20" : "w-72"
+        }`}
+      >
+        {desktopCollapsed ? (
+          <div className="flex flex-col items-center gap-3 px-2 pt-6">
             <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-900 text-sm font-semibold text-white shadow-sm">
               IA
             </div>
-            <div className="min-w-0">
-              <p className="text-xs font-semibold uppercase tracking-[0.26em] text-slate-500">
-                Invi Admin
-              </p>
-            </div>
+            <button
+              type="button"
+              onClick={onToggleDesktopCollapsed}
+              className="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-slate-200 bg-white text-slate-700 shadow-sm transition hover:bg-slate-100 hover:text-slate-900"
+              aria-label="Expand sidebar"
+              title="Expand sidebar"
+            >
+              <ChevronRight size={18} />
+            </button>
           </div>
-        </div>
+        ) : (
+          <div className="flex items-start justify-between gap-3 px-3 pt-6">
+            <div className="flex items-center gap-3">
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-900 text-sm font-semibold text-white shadow-sm">
+                IA
+              </div>
+              <div className="min-w-0">
+                <p className="text-xs font-semibold uppercase tracking-[0.26em] text-slate-500">
+                  Invi Admin
+                </p>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={onToggleDesktopCollapsed}
+              className="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-slate-200 bg-white text-slate-700 shadow-sm transition hover:bg-slate-100 hover:text-slate-900"
+              aria-label="Collapse sidebar"
+              title="Collapse sidebar"
+            >
+              <ChevronLeft size={18} />
+            </button>
+          </div>
+        )}
 
-        {renderNav({ collapsed: false })}
+        {renderNav({ collapsed: desktopCollapsed })}
       </aside>
 
       <div
@@ -98,30 +137,30 @@ export function Sidebar({ mobileOpen, onMobileClose }: SidebarProps) {
             mobileOpen ? "translate-x-0" : "-translate-x-full"
           }`}
         >
-            <div className="flex items-start justify-between gap-3 px-4 pt-5">
-              <div className="flex items-center gap-3">
-                <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-slate-900 text-sm font-semibold text-white shadow-sm">
-                  IA
-                </div>
-                <div className="min-w-0">
-                  <p className="text-xs font-semibold uppercase tracking-[0.26em] text-slate-500">
-                    Invi Admin
-                  </p>
-                </div>
+          <div className="flex items-start justify-between gap-3 px-4 pt-5">
+            <div className="flex items-center gap-3">
+              <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-slate-900 text-sm font-semibold text-white shadow-sm">
+                IA
               </div>
-
-              <button
-                type="button"
-                onClick={onMobileClose}
-                className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-slate-200 bg-white text-slate-700 shadow-sm transition hover:bg-slate-100 hover:text-slate-900"
-                aria-label="Close navigation"
-              >
-                <X size={18} />
-              </button>
+              <div className="min-w-0">
+                <p className="text-xs font-semibold uppercase tracking-[0.26em] text-slate-500">
+                  Invi Admin
+                </p>
+              </div>
             </div>
 
-            {renderNav({ collapsed: false })}
-          </aside>
+            <button
+              type="button"
+              onClick={onMobileClose}
+              className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-slate-200 bg-white text-slate-700 shadow-sm transition hover:bg-slate-100 hover:text-slate-900"
+              aria-label="Close navigation"
+            >
+              <X size={18} />
+            </button>
+          </div>
+
+          {renderNav({ collapsed: false })}
+        </aside>
       </div>
     </>
   );

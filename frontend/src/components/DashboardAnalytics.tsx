@@ -261,8 +261,8 @@ export function DashboardAnalytics({
           </div>
 
           {statusSeries.length > 0 ? (
-            <div className="grid gap-5 xl:grid-cols-[minmax(0,220px)_minmax(0,1fr)] xl:items-center">
-              <div className="relative mx-auto h-64 w-full max-w-[240px]">
+            <div className="grid gap-5 xl:grid-cols-1 2xl:grid-cols-[minmax(0,220px)_minmax(0,1fr)] 2xl:items-center">
+              <div className="relative mx-auto h-60 w-full max-w-[220px]">
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
                     <Tooltip
@@ -320,7 +320,7 @@ export function DashboardAnalytics({
                 </div>
               </div>
 
-              <div className="grid gap-2 sm:grid-cols-2">
+              <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-2">
                 {statusSeries.map((entry, index) => {
                   const color = statusColors[index % statusColors.length];
                   const share =
@@ -332,7 +332,8 @@ export function DashboardAnalytics({
                     <LegendChip
                       key={entry.status}
                       label={formatStatusLabel(entry.status)}
-                      detail={`${entry.count} · ${share}%`}
+                      count={entry.count}
+                      share={share}
                       color={color}
                     />
                   );
@@ -396,17 +397,34 @@ function formatStatusLabel(status: string) {
 function LegendChip({
   label,
   color,
-  detail,
+  count,
+  share,
 }: {
   label: string;
   color: string;
-  detail?: string;
+  count?: number;
+  share?: number;
 }) {
+  const showStats = count !== undefined && share !== undefined;
+
   return (
-    <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-600 shadow-sm">
-      <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: color }} />
-      <span>{label}</span>
-      {detail ? <span className="text-slate-400">{detail}</span> : null}
+    <div
+      className={`flex items-center ${
+        showStats ? "justify-between" : "justify-start"
+      } gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-600 shadow-sm`}
+    >
+      <div className="flex min-w-0 items-center gap-3">
+        <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ backgroundColor: color }} />
+        <span className="min-w-0 truncate text-slate-700">{label}</span>
+      </div>
+      {showStats ? (
+        <div className="shrink-0 text-right leading-none">
+          <p className="text-sm font-semibold text-slate-900">{count}</p>
+          <p className="mt-1 text-[11px] uppercase tracking-[0.18em] text-slate-400">
+            {share}%
+          </p>
+        </div>
+      ) : null}
     </div>
   );
 }
