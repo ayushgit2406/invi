@@ -845,14 +845,14 @@ class TestMaintenanceEndpoints:
         assert response.status_code == 200
         data = response.json()["data"]
         assert data["status"] == "seeded"
-        assert data["products_created"] == 5
-        assert data["customers_created"] == 3
-        assert data["orders_created"] == 2
+        assert data["products_created"] == 25
+        assert data["customers_created"] == 20
+        assert data["orders_created"] == 20
 
-        assert db.query(Product).count() == 5
-        assert db.query(Customer).count() == 3
-        assert db.query(Order).count() == 2
-        assert db.query(InventoryMovement).count() >= 2
+        assert db.query(Product).count() == 25
+        assert db.query(Customer).count() == 20
+        assert db.query(Order).count() == 20
+        assert db.query(InventoryMovement).count() >= 20
 
     def test_reset_inventory_endpoint(self, db: Session):
         from fastapi.testclient import TestClient
@@ -865,9 +865,9 @@ class TestMaintenanceEndpoints:
         data = response.json()["data"]
         assert data["target"] == "inventory"
         assert db.query(InventoryMovement).count() == 0
-        assert db.query(Product).count() == 5
-        assert db.query(Customer).count() == 3
-        assert db.query(Order).count() == 2
+        assert db.query(Product).count() == 25
+        assert db.query(Customer).count() == 20
+        assert db.query(Order).count() == 20
 
     def test_reset_orders_endpoint(self, db: Session):
         from fastapi.testclient import TestClient
@@ -882,8 +882,8 @@ class TestMaintenanceEndpoints:
         assert db.query(InventoryMovement).count() == 0
         assert db.query(OrderItem).count() == 0
         assert db.query(Order).count() == 0
-        assert db.query(Product).count() == 5
-        assert db.query(Customer).count() == 3
+        assert db.query(Product).count() == 25
+        assert db.query(Customer).count() == 20
 
     def test_reset_products_endpoint(self, db: Session):
         from fastapi.testclient import TestClient
@@ -898,8 +898,8 @@ class TestMaintenanceEndpoints:
         assert db.query(InventoryMovement).count() == 0
         assert db.query(OrderItem).count() == 0
         assert db.query(Product).count() == 0
-        assert db.query(Customer).count() == 3
-        assert db.query(Order).count() == 2
+        assert db.query(Customer).count() == 20
+        assert db.query(Order).count() == 20
 
     def test_reset_customers_endpoint(self, db: Session):
         from fastapi.testclient import TestClient
@@ -915,7 +915,7 @@ class TestMaintenanceEndpoints:
         assert db.query(OrderItem).count() == 0
         assert db.query(Order).count() == 0
         assert db.query(Customer).count() == 0
-        assert db.query(Product).count() == 5
+        assert db.query(Product).count() == 25
 
     def test_reset_all_endpoint(self, db: Session):
         from fastapi.testclient import TestClient
