@@ -1,0 +1,18 @@
+from enum import Enum
+
+class OrderStatus(str, Enum):
+    PENDING = "PENDING"
+    CONFIRMED = "CONFIRMED"
+    PROCESSING = "PROCESSING"
+    SHIPPED = "SHIPPED"
+    FULFILLED = "FULFILLED"
+    DELIVERED = "DELIVERED"
+    CANCELLED = "CANCELLED"
+
+
+class InventoryMovementType(str, Enum):
+    STOCK_IN = "STOCK_IN"
+    STOCK_OUT = "STOCK_OUT"
+    ORDER_PLACED = "ORDER_PLACED"
+    ORDER_CANCELLED = "ORDER_CANCELLED"
+    MANUAL_ADJUSTMENT = "MANUAL_ADJUSTMENT"
