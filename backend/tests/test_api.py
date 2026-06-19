@@ -832,3 +832,103 @@ class TestHealthChecks:
         response = client.get("/api/v1/ready/")
         assert response.status_code == 200
         assert response.json()["data"]["status"] == "ready"
+
+
+class TestMaintenanceEndpoints:
+    """Test maintenance seed/reset endpoints"""
+
+    def test_seed_demo_data(self, db: Session):
+        from fastapi.testclient import TestClient
+
+        client = TestClient(app)
+        response = client.post("/api/v1/maintenance/seed")
+        assert response.status_code == 200
+        data = response.json()["data"]
+        assert data["status"] == "seeded"
+        assert data["products_created"] == 5
+        assert data["customers_created"] == 3
+        assert data["orders_created"] == 2
+
+        assert db.query(Product).count() == 5
+        assert db.query(Customer).count() == 3
+        assert db.query(Order).count() == 2
+        assert db.query(InventoryMovement).count() >= 2
+
+    def test_reset_inventory_endpoint(self, db: Session):
+        from fastapi.testclient import TestClient
+
+        client = TestClient(app)
+        client.post("/api/v1/maintenance/seed")
+
+        response = client.delete("/api/v1/maintenance/reset/inventory")
+        assert response.status_code == 200
+        data = response.json()["data"]
+        assert data["target"] == "inventory"
+        assert db.query(InventoryMovement).count() == 0
+        assert db.query(Product).count() == 5
+        assert db.query(Customer).count() == 3
+        assert db.query(Order).count() == 2
+
+    def test_reset_orders_endpoint(self, db: Session):
+        from fastapi.testclient import TestClient
+
+        client = TestClient(app)
+        client.post("/api/v1/maintenance/seed")
+
+        response = client.delete("/api/v1/maintenance/reset/orders")
+        assert response.status_code == 200
+        data = response.json()["data"]
+        assert data["target"] == "orders"
+        assert db.query(InventoryMovement).count() == 0
+        assert db.query(OrderItem).count() == 0
+        assert db.query(Order).count() == 0
+        assert db.query(Product).count() == 5
+        assert db.query(Customer).count() == 3
+
+    def test_reset_products_endpoint(self, db: Session):
+        from fastapi.testclient import TestClient
+
+        client = TestClient(app)
+        client.post("/api/v1/maintenance/seed")
+
+        response = client.delete("/api/v1/maintenance/reset/products")
+        assert response.status_code == 200
+        data = response.json()["data"]
+        assert data["target"] == "products"
+        assert db.query(InventoryMovement).count() == 0
+        assert db.query(OrderItem).count() == 0
+        assert db.query(Product).count() == 0
+        assert db.query(Customer).count() == 3
+        assert db.query(Order).count() == 2
+
+    def test_reset_customers_endpoint(self, db: Session):
+        from fastapi.testclient import TestClient
+
+        client = TestClient(app)
+        client.post("/api/v1/maintenance/seed")
+
+        response = client.delete("/api/v1/maintenance/reset/customers")
+        assert response.status_code == 200
+        data = response.json()["data"]
+        assert data["target"] == "customers"
+        assert db.query(InventoryMovement).count() == 0
+        assert db.query(OrderItem).count() == 0
+        assert db.query(Order).count() == 0
+        assert db.query(Customer).count() == 0
+        assert db.query(Product).count() == 5
+
+    def test_reset_all_endpoint(self, db: Session):
+        from fastapi.testclient import TestClient
+
+        client = TestClient(app)
+        client.post("/api/v1/maintenance/seed")
+
+        response = client.delete("/api/v1/maintenance/reset/all")
+        assert response.status_code == 200
+        data = response.json()["data"]
+        assert data["target"] == "all"
+        assert db.query(InventoryMovement).count() == 0
+        assert db.query(OrderItem).count() == 0
+        assert db.query(Order).count() == 0
+        assert db.query(Customer).count() == 0
+        assert db.query(Product).count() == 0

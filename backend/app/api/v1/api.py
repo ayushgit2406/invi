@@ -18,6 +18,9 @@ from app.api.v1.routers.dashboard import (
 from app.api.v1.routers.inventory import (
     router as inventory_router
 )
+from app.api.v1.routers.maintenance import (
+    router as maintenance_router
+)
 
 api_router = APIRouter()
 
@@ -28,3 +31,4 @@ api_router.include_router(customer_router)
 api_router.include_router(order_router)
 api_router.include_router(dashboard_router)
 api_router.include_router(inventory_router)
+api_router.include_router(maintenance_router)

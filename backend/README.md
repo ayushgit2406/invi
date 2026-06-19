@@ -60,6 +60,15 @@ Inside Docker:
 docker compose exec backend python -m app.scripts.seed
 ```
 
+## Maintenance API
+
+- `POST /api/v1/maintenance/seed`
+- `DELETE /api/v1/maintenance/reset/all`
+- `DELETE /api/v1/maintenance/reset/products`
+- `DELETE /api/v1/maintenance/reset/customers`
+- `DELETE /api/v1/maintenance/reset/orders`
+- `DELETE /api/v1/maintenance/reset/inventory`
+
 ## Health Checks
 
 - `GET /api/v1/health/`
